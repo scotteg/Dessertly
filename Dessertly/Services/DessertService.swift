@@ -11,7 +11,9 @@ import Foundation
 actor DessertService: DessertServiceProtocol {
     static let shared = DessertService()
     
-    private let baseURLString = "https://www.themealdb.com/api/json/v1/1/"
+    private let scheme = "https"
+    private let host = "www.themealdb.com"
+    private let basePath = "/api/json/v1/1/"
     
     private init() {}
     
@@ -75,8 +77,12 @@ actor DessertService: DessertServiceProtocol {
     ///   - queryItems: An array of `URLQueryItem` to be added to the URL.
     /// - Returns: A fully constructed `URL` or `nil` if the URL is invalid.
     private func makeURL(endpoint: String, queryItems: [URLQueryItem]) -> URL? {
-        var components = URLComponents(string: baseURLString + endpoint)
-        components?.queryItems = queryItems
-        return components?.url
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = host
+        components.path = basePath + endpoint
+        components.queryItems = queryItems
+        
+        return components.url
     }
 }

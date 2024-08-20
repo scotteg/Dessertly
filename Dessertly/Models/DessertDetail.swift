@@ -1,0 +1,99 @@
+//
+//  DessertDetail.swift
+//  Dessertly
+//
+//  Created by Scott Gardner on 8/17/24.
+//
+
+import Foundation
+
+/// Represents detailed information about a dessert.
+struct DessertDetail: Decodable {
+    /// Unique identifier for the dessert.
+    let id: String
+    
+    /// Name of the dessert.
+    let name: String
+    
+    /// Preparation instructions for the dessert. This property is optional as instructions may not be available.
+    let instructions: String?
+    
+    /// Dictionary of ingredients and their corresponding measurements.
+    let ingredients: [String: String]
+    
+    /// URL string for the dessert's image.
+    let imageUrl: String
+    
+    enum CodingKeys: String, CodingKey {
+        // Maps the JSON keys to the property names.
+        case id = "idMeal"
+        case name = "strMeal"
+        case instructions = "strInstructions"
+        case imageUrl = "strMealThumb"
+    }
+    
+    /// Initializes a new instance of `DessertDetail` with the provided properties.
+    init(id: String, name: String, instructions: String?, ingredients: [String: String], imageUrl: String) {
+        self.id = id
+        self.name = name
+        self.instructions = instructions
+        self.ingredients = ingredients
+        self.imageUrl = imageUrl
+    }
+    
+    /// Initializes a new instance of `DessertDetail` by decoding from the provided decoder. This initializer also reformats the instructions text and dynamically parses ingredients.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        
+        // Reformats the `instructions` text if present.
+        if let unformattedInstructions = try container.decodeIfPresent(String.self, forKey: .instructions) {
+            instructions = Self.reformatText(unformattedInstructions)
+        } else {
+            instructions = nil
+        }
+        
+        imageUrl = try container.decode(String.self, forKey: .imageUrl)
+        
+        var ingredientsDict = [String: String]()
+        let dynamicContainer = try decoder.container(keyedBy: DynamicCodingKeys.self)
+        
+        // Loops through potential ingredient and measure keys in the JSON, from 1 to 20.
+        for i in 1...20 {
+            let ingredientKey = DynamicCodingKeys(stringValue: "strIngredient\(i)")!
+            let measureKey = DynamicCodingKeys(stringValue: "strMeasure\(i)")!
+            
+            // Checks if the `ingredient` and `measure` are not empty, then capitalizes and stores them in the dictionary.
+            if let ingredient = try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey)?.capitalized,
+               !ingredient.isEmpty,
+               let measure = try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey),
+               !measure.isEmpty {
+                ingredientsDict[ingredient] = measure
+            }
+        }
+        
+        ingredients = ingredientsDict
+    }
+    
+    /// Reformats the given text by trimming whitespace and adding double newlines between paragraphs.
+    static func reformatText(_ text: String) -> String {
+        // Normalize line breaks to '\n' and split into paragraphs
+        let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .split(separator: "\n", omittingEmptySubsequences: true)
+        
+        // Join paragraphs with double line breaks
+        return paragraphs.joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    struct DynamicCodingKeys: CodingKey {
+        var stringValue: String
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        
+        var intValue: Int? { return nil }
+        init?(intValue: Int) { return nil }
+    }
+}

@@ -38,8 +38,8 @@ final class MockDessertService: DessertServiceProtocol {
         return DessertDetail(
             id: id,
             name: "Mock Dessert",
-            instructions: "Mock instructions",
-            ingredients: ["Sugar": "1 cup"],
+            instructions: "Add sugar, then flour, and finally eggs. Mix well.",
+            ingredients: ["Sugar": "1 cup", "Flour": "2 cups", "Eggs": "2 large"],
             imageUrl: ""
         )
     }

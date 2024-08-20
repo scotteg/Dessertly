@@ -52,4 +52,36 @@ final class DessertDetailViewModelTests: XCTestCase {
         let currentError = await ErrorHandler.shared.getCurrentError()
         XCTAssertNotNil(currentError)
     }
+    
+    /// Tests sorting ingredients in ascending order.
+    func testSortIngredientsAscending() async {
+        // Given
+        let dessertID = "1"
+        await viewModel.loadDessertDetail(dessertID: dessertID)
+        
+        // When
+        let sortedIngredients = await viewModel.sortIngredients(
+            ingredients: await viewModel.dessertDetail?.ingredients ?? [:],
+            ascending: true
+        )
+        
+        // Then
+        XCTAssertEqual(sortedIngredients.map { $0.ingredient }, ["Eggs", "Flour", "Sugar"])
+    }
+    
+    /// Tests sorting ingredients in descending order.
+    func testSortIngredientsDescending() async {
+        // Given
+        let dessertID = "1"
+        await viewModel.loadDessertDetail(dessertID: dessertID)
+        
+        // When
+        let sortedIngredients = await viewModel.sortIngredients(
+            ingredients: await viewModel.dessertDetail?.ingredients ?? [:],
+            ascending: false
+        )
+        
+        // Then
+        XCTAssertEqual(sortedIngredients.map { $0.ingredient }, ["Sugar", "Flour", "Eggs"])
+    }
 }

@@ -15,6 +15,7 @@ struct DessertDetailView: View {
     @State private var dessertDetail: DessertDetail?
     @State private var isLoading = true
     @State private var hasError = false
+    @State private var sortAscending = true
     
     private let viewModel = DessertDetailViewModel()
     
@@ -100,10 +101,20 @@ struct DessertDetailView: View {
     
     @ViewBuilder
     private func ingredientsSection(_ ingredients: [String: String]) -> some View {
-        if !ingredients.isEmpty {
-            GroupBox(label: Label("Ingredients", systemImage: "cart")) {
+        let sortedIngredients = sortIngredients(ingredients: ingredients)
+        
+        if !sortedIngredients.isEmpty {
+            GroupBox(label: HStack {
+                Label("Ingredients", systemImage: "cart")
+                Spacer()
+                Button(action: {
+                    sortAscending.toggle()
+                }) {
+                    Image(systemName: sortAscending ? "chevron.up" : "chevron.down")
+                }
+            }) {
                 VStack(alignment: .leading) {
-                    ForEach(ingredients.sorted(by: { $0.key < $1.key }), id: \.key) { ingredient, measure in
+                    ForEach(sortedIngredients, id: \.ingredient) { ingredient, measure in
                         HStack {
                             Text(ingredient)
                             Spacer()
@@ -116,6 +127,12 @@ struct DessertDetailView: View {
             }
             .padding(.horizontal)
         }
+    }
+    
+    private func sortIngredients(ingredients: [String: String]) -> [(ingredient: String, measure: String)] {
+        let ingredientsArray = ingredients.map { ($0.key, $0.value) }
+        let sortedIngredients = ingredientsArray.sorted { $0.0.lowercased() < $1.0.lowercased() }
+        return sortAscending ? sortedIngredients : sortedIngredients.reversed()
     }
     
     private func loadDessertDetail() async {

@@ -2,6 +2,8 @@
 
 **Dessertly** is an iOS app that provides a delightful experience for discovering and learning about desserts. It features a comprehensive list of desserts and detailed information about each one, making it easy to explore a variety of sweet treats.
 
+This project serves as an example of modern, idiomatic Swift, that showcases the use of Swift Concurrency, SwiftUI, responsive design, and networking with REST APIs. Additionally, it uses the MVVM (Model-View-ViewModel) architecture design pattern, which promotes a clean separation of concerns and makes the codebase more maintainable and testable. It's designed to be both a practical app and a learning resource for developers to adopt best practices in Swift development.
+
 ## Features
 
 - Browse a list of desserts.

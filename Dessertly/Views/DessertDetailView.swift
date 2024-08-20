@@ -103,7 +103,7 @@ struct DessertDetailView: View {
         if !ingredients.isEmpty {
             GroupBox(label: Label("Ingredients", systemImage: "cart")) {
                 VStack(alignment: .leading) {
-                    ForEach(ingredients.sorted(by: >), id: \.key) { ingredient, measure in
+                    ForEach(ingredients.sorted(by: { $0.key < $1.key }), id: \.key) { ingredient, measure in
                         HStack {
                             Text(ingredient)
                             Spacer()

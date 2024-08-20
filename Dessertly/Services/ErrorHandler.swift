@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// An actor responsible for managing and reporting errors across the application.
+/// An actor responsible for managing and reporting errors across the app.
 actor ErrorHandler {
     static let shared = ErrorHandler()
     

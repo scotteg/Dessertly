@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DessertDetailView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    
     let dessertID: String
     
     @State private var dessertDetail: DessertDetail?
@@ -17,7 +19,7 @@ struct DessertDetailView: View {
     private let viewModel = DessertDetailViewModel()
     
     var body: some View {
-        ScrollView {
+        GeometryReader { geometry in
             if isLoading {
                 ProgressView()
                     .padding()
@@ -26,56 +28,103 @@ struct DessertDetailView: View {
                     .foregroundColor(.red)
                     .padding()
             } else if let detail = dessertDetail {
-                VStack(alignment: .leading, spacing: 16) {
-                    // MARK: - Dessert Image
-                    if let url = URL(string: detail.imageUrl) {
-                        CachedAsyncImage(url: url)
-                            .scaledToFill()
-                            .frame(maxHeight: 300)
-                            .cornerRadius(10)
-                            .padding(.horizontal)
-                    }
-                    
-                    // MARK: - Instructions Section
-                    GroupBox(label: Label("Instructions", systemImage: "list.bullet")) {
-                        Text(detail.instructions ?? "No instructions available.")
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.horizontal)
-                    
-                    // MARK: - Ingredients Section
-                    if !detail.ingredients.isEmpty {
-                        GroupBox(label: Label("Ingredients", systemImage: "cart")) {
-                            VStack(alignment: .leading) {
-                                ForEach(detail.ingredients.sorted(by: >), id: \.key) { ingredient, measure in
-                                    HStack {
-                                        Text(ingredient)
-                                        Spacer()
-                                        Text(measure)
-                                    }
-                                    Divider()
-                                }
-                            }
-                            .padding()
-                        }
-                        .padding(.horizontal)
-                    }
-                }
-                .padding(.top)
+                content(for: detail, geometry: geometry)
+                    .navigationTitle(isLoading ? "Loading Detail..." : dessertDetail?.name ?? "Dessert Detail")
             }
         }
-        .navigationTitle(isLoading ? "Loading Detail..." : dessertDetail?.name ?? "Dessert Detail")
         .onAppear {
             Task {
-                await viewModel.loadDessertDetail(dessertID: dessertID)
-                await self.dessertDetail = viewModel.dessertDetail
-                self.isLoading = false
-                
-                if await viewModel.dessertDetail == nil {
-                    self.hasError = true
-                }
+                await loadDessertDetail()
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func content(for detail: DessertDetail, geometry: GeometryProxy) -> some View {
+        if verticalSizeClass == .compact {
+            landscapeContent(for: detail, geometry: geometry)
+        } else {
+            portraitContent(for: detail)
+        }
+    }
+    
+    private func landscapeContent(for detail: DessertDetail, geometry: GeometryProxy) -> some View {
+        HStack(alignment: .top, spacing: 16) {
+            if let url = URL(string: detail.imageUrl) {
+                CachedAsyncImage(url: url)
+                    .scaledToFill()
+                    .frame(width: 150, height: 150)
+                    .cornerRadius(10)
+                    .padding(.leading)
+            }
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    instructionsSection(detail.instructions)
+                    ingredientsSection(detail.ingredients)
+                }
+                .frame(maxWidth: geometry.size.width - 200)
+                .padding(.trailing)
+            }
+        }
+        .padding(.top, geometry.safeAreaInsets.top)
+    }
+    
+    private func portraitContent(for detail: DessertDetail) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                if let url = URL(string: detail.imageUrl) {
+                    CachedAsyncImage(url: url)
+                        .scaledToFill()
+                        .frame(maxHeight: 300)
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                }
+                
+                instructionsSection(detail.instructions)
+                ingredientsSection(detail.ingredients)
+            }
+            .padding(.top)
+        }
+    }
+    
+    @ViewBuilder
+    private func instructionsSection(_ instructions: String?) -> some View {
+        GroupBox(label: Label("Instructions", systemImage: "list.bullet")) {
+            Text(instructions ?? "No instructions available.")
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder
+    private func ingredientsSection(_ ingredients: [String: String]) -> some View {
+        if !ingredients.isEmpty {
+            GroupBox(label: Label("Ingredients", systemImage: "cart")) {
+                VStack(alignment: .leading) {
+                    ForEach(ingredients.sorted(by: >), id: \.key) { ingredient, measure in
+                        HStack {
+                            Text(ingredient)
+                            Spacer()
+                            Text(measure)
+                        }
+                        Divider()
+                    }
+                }
+                .padding()
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private func loadDessertDetail() async {
+        await viewModel.loadDessertDetail(dessertID: dessertID)
+        self.dessertDetail = await viewModel.dessertDetail
+        self.isLoading = false
+        
+        if await viewModel.dessertDetail == nil {
+            self.hasError = true
         }
     }
 }

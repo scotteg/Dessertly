@@ -1,6 +1,6 @@
 # Dessertly
 
-**Dessertly** is an iOS application that provides a delightful experience for discovering and learning about desserts. It features a comprehensive list of desserts and detailed information about each one, making it easy to explore a variety of sweet treats.
+**Dessertly** is an iOS app that provides a delightful experience for discovering and learning about desserts. It features a comprehensive list of desserts and detailed information about each one, making it easy to explore a variety of sweet treats.
 
 ## Features
 
@@ -14,11 +14,17 @@ Click on the thumbnails to view the full-size images.
 ### Home Screen
 [![Home Screen](Images/home-screen-thumbnail.png)](Images/home-screen.png)
 
+### Home Screen Dark Mode
+[![Home Screen](Images/home-screen-dark-thumbnail.png)](Images/home-screen-dark.png)
+
 ### Home Screen Search
 [![Home Screen Search](Images/home-screen-search-thumbnail.png)](Images/home-screen-search.png)
 
 ### Dessert Detail Instructions
 [![Dessert Detail Instructions](Images/dessert-detail-instructions-thumbnail.png)](Images/dessert-detail-instructions.png)
+
+### Dessert Detail Landscape
+[![Dessert Detail Instructions](Images/dessert-detail-landscape-thumbnail.png)](Images/dessert-detail-landscape.png)
 
 ### Dessert Detail Ingredients
 [![Dessert Detail Ingredients](Images/dessert-detail-ingredients-thumbnail.png)](Images/dessert-detail-ingredients.png)

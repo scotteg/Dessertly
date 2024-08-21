@@ -4,6 +4,8 @@
 
 This project serves as an example of modern, idiomatic Swift, that showcases the use of Swift Concurrency, SwiftUI, responsive design, and networking with REST APIs. Additionally, it uses the MVVM (Model-View-ViewModel) architecture design pattern, which promotes a clean separation of concerns and makes the codebase more maintainable and testable. It's designed to be both a practical app and a learning resource for developers to adopt best practices in Swift development.
 
+[RxSwift version of this project](https://github.com/scotteg/Dessertly-RxSwift)
+
 ## Features
 
 - Browse a list of desserts.

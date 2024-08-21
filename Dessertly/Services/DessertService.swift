@@ -18,7 +18,7 @@ actor DessertService: DessertServiceProtocol {
     private init() {}
     
     /// Fetches a list of desserts from the remote API.
-    /// - Returns: A sorted array of `Dessert` objects.
+    /// - Returns: A sorted array of `Dessert` instances.
     /// - Throws: An error if the data fetching or decoding fails.
     func fetchDesserts() async throws -> [Dessert] {
         do {
@@ -39,7 +39,7 @@ actor DessertService: DessertServiceProtocol {
     
     /// Fetches the details of a specific dessert by its ID.
     /// - Parameter id: The unique identifier of the dessert.
-    /// - Returns: A `DessertDetail` object containing detailed information about the dessert.
+    /// - Returns: A `DessertDetail` instance containing detailed information about the dessert.
     /// - Throws: An error if the URL is invalid, data fetching fails, or decoding fails.
     func fetchDessertDetail(by id: String) async throws -> DessertDetail {
         do {

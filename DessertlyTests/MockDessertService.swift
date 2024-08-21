@@ -17,7 +17,7 @@ final class MockDessertService: DessertServiceProtocol {
     }
     
     /// Simulates fetching a list of desserts.
-    /// - Returns: An array of mock `Dessert` objects.
+    /// - Returns: An array of mock `Dessert` instances.
     func fetchDesserts() async throws -> [Dessert] {
         if shouldThrow {
             throw URLError(.badServerResponse)
@@ -30,7 +30,7 @@ final class MockDessertService: DessertServiceProtocol {
     
     /// Simulates fetching detailed information for a specific dessert by its ID.
     /// - Parameter id: The ID of the dessert to fetch details for.
-    /// - Returns: A mock `DessertDetail` object containing mock data.
+    /// - Returns: A mock `DessertDetail` instance containing mock data.
     func fetchDessertDetail(by id: String) async throws -> DessertDetail {
         if shouldThrow {
             throw URLError(.badServerResponse)

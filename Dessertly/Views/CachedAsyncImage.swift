@@ -44,7 +44,6 @@ struct CachedAsyncImage: View {
             if let loadedImage = UIImage(data: data) {
                 ImageCache.shared.setImage(loadedImage, forKey: url.absoluteString)
                 
-                // Update the UI on the main actor.
                 await MainActor.run {
                     self.image = loadedImage
                 }

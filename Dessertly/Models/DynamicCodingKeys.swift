@@ -17,7 +17,7 @@ enum DynamicCodingKeys: CodingKey {
     }
     
     init?(stringValue: String) {
-        self = .key(stringValue)  // Use 'stringValue' directly in the initializer
+        self = .key(stringValue)
     }
     
     var intValue: Int? { return nil }

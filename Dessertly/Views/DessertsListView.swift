@@ -55,10 +55,8 @@ struct DessertsListView: View {
                     await updateFilteredDesserts()
                 }
             }
-            .onAppear {
-                Task {
-                    await loadDesserts()
-                }
+            .task {
+                await loadDesserts()
             }
             .alert(isPresented: $isShowingError) {
                 Alert(

@@ -33,11 +33,9 @@ struct DessertDetailView: View {
                     .navigationTitle(isLoading ? "Loading Detail..." : dessertDetail?.name ?? "Dessert Detail")
             }
         }
-        .onAppear {
-            Task {
-                await loadDessertDetail()
-                sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
-            }
+        .task {
+            await loadDessertDetail()
+            sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
         }
     }
     

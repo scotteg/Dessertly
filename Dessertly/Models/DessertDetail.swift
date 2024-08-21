@@ -73,15 +73,25 @@ struct DessertDetail: Decodable {
         ingredients = ingredientsDict
     }
     
-    /// Reformats the given text by trimming whitespace and adding double newlines between paragraphs.
+    /// Reformats the given text by trimming whitespace, adding double newlines between paragraphs,
+    /// and numbering each paragraph starting from 1.
+    /// - Parameter text: The input text to be reformatted.
+    /// - Returns: A string where each paragraph is numbered and separated by double newlines.
     static func reformatText(_ text: String) -> String {
         // Normalize line breaks to '\n' and split into paragraphs
         let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\r", with: "\n")
             .split(separator: "\n", omittingEmptySubsequences: true)
         
+        // Enumerate paragraphs and add a number to each one
+        let numberedParagraphs = paragraphs.enumerated().map { index, paragraph in
+            return "\(index + 1). \(paragraph)"
+        }
+        
         // Join paragraphs with double line breaks
-        return paragraphs.joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        return numberedParagraphs
+            .joined(separator: "\n\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
     struct DynamicCodingKeys: CodingKey {

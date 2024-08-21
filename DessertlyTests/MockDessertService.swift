@@ -22,6 +22,7 @@ final class MockDessertService: DessertServiceProtocol {
         if shouldThrow {
             throw URLError(.badServerResponse)
         }
+        
         return [
             Dessert(id: "1", name: "Mock Dessert 1", thumbnail: ""),
             Dessert(id: "2", name: "Mock Dessert 2", thumbnail: "")
@@ -35,6 +36,7 @@ final class MockDessertService: DessertServiceProtocol {
         if shouldThrow {
             throw URLError(.badServerResponse)
         }
+        
         return DessertDetail(
             id: id,
             name: "Mock Dessert",

@@ -9,10 +9,7 @@ import Foundation
 
 /// Represents detailed information about a dessert.
 struct DessertDetail: Decodable {
-    /// Unique identifier for the dessert.
     let id: String
-    
-    /// Name of the dessert.
     let name: String
     
     /// Preparation instructions for the dessert. This property is optional as instructions may not be available.

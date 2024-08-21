@@ -26,6 +26,7 @@ actor DessertsListViewModel {
             await ErrorHandler.shared.report(error: error)
             errorMessage = error.localizedDescription
         }
+        
         isLoading = false
     }
     

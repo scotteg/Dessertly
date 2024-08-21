@@ -35,7 +35,8 @@ struct DessertDetailView: View {
         }
         .task {
             await loadDessertDetail()
-            sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
+            sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:],
+                                                                ascending: sortAscending)
         }
     }
     
@@ -107,7 +108,8 @@ struct DessertDetailView: View {
                 Button(action: {
                     Task {
                         sortAscending.toggle()
-                        sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
+                        sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:],
+                                                                            ascending: sortAscending)
                     }
                 }) {
                     Image(systemName: sortAscending ? "chevron.up" : "chevron.down")

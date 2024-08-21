@@ -9,10 +9,7 @@ import Foundation
 
 /// Represents a dessert item.
 struct Dessert: Identifiable, Codable {
-    /// Unique identifier for the dessert.
     let id: String
-    
-    /// Name of the dessert.
     let name: String
     
     /// URL string for the dessert's thumbnail image.

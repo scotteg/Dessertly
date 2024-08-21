@@ -82,7 +82,6 @@ actor DessertService: DessertServiceProtocol {
         components.host = host
         components.path = basePath + endpoint
         components.queryItems = queryItems
-        
         return components.url
     }
 }

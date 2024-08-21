@@ -76,6 +76,7 @@ struct DessertsListView: View {
         await viewModel.loadDesserts()
         await updateFilteredDesserts()
         isLoading = false
+        
         if let error = await viewModel.errorMessage {
             currentErrorMessage = error
             isShowingError = true

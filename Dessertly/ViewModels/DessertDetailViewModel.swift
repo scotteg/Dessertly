@@ -20,13 +20,12 @@ actor DessertDetailViewModel {
     
     func loadDessertDetail(dessertID: String) async {
         do {
-            let detail = try await dessertService.fetchDessertDetail(by: dessertID)
-            self.dessertDetail = detail
+            dessertDetail = try await dessertService.fetchDessertDetail(by: dessertID)
         } catch {
             await ErrorHandler.shared.report(error: error)
-            self.errorMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
-        self.isLoading = false
+        isLoading = false
     }
     
     func sortIngredients(ingredients: [String: String], ascending: Bool) -> [(ingredient: String, measure: String)] {
@@ -36,6 +35,6 @@ actor DessertDetailViewModel {
     }
     
     var hasError: Bool {
-        return errorMessage != nil
+        errorMessage != nil
     }
 }

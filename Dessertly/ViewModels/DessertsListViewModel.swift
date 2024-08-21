@@ -21,13 +21,12 @@ actor DessertsListViewModel {
     
     func loadDesserts() async {
         do {
-            let fetchedDesserts = try await dessertService.fetchDesserts()
-            self.desserts = fetchedDesserts
+            desserts = try await dessertService.fetchDesserts()
         } catch {
             await ErrorHandler.shared.report(error: error)
-            self.errorMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
-        self.isLoading = false
+        isLoading = false
     }
     
     func updateSearchQuery(_ query: String) {
@@ -36,17 +35,17 @@ actor DessertsListViewModel {
     
     var filteredDesserts: [Dessert] {
         if searchQuery.isEmpty {
-            return desserts
+            desserts
         } else {
-            return desserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
+            desserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
         }
     }
     
     var isEmpty: Bool {
-        return desserts.isEmpty && !isLoading
+        desserts.isEmpty && !isLoading
     }
     
     var hasError: Bool {
-        return errorMessage != nil
+        errorMessage != nil
     }
 }

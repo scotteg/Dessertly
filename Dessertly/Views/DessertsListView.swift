@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DessertsListView: View {
+    @State private var viewModel = DessertsListViewModel()
     @State private var desserts: [Dessert] = []
     @State private var isLoading = true
     @State private var isShowingError = false
@@ -24,7 +25,7 @@ struct DessertsListView: View {
                         .foregroundColor(.gray)
                         .padding()
                 } else {
-                    List(filteredDesserts, id: \.id) { dessert in
+                    List(desserts, id: \.id) { dessert in
                         NavigationLink(destination: DessertDetailView(dessertID: dessert.id)) {
                             HStack {
                                 if let url = URL(string: dessert.thumbnail) {
@@ -49,14 +50,14 @@ struct DessertsListView: View {
                 }
             }
             .searchable(text: $searchQuery, prompt: "Search for desserts")
+            .onChange(of: searchQuery) {
+                Task {
+                    await updateFilteredDesserts()
+                }
+            }
             .onAppear {
                 Task {
                     await loadDesserts()
-                    
-                    if let error = await ErrorHandler.shared.getCurrentError() {
-                        self.currentErrorMessage = error.localizedDescription
-                        self.isShowingError = true
-                    }
                 }
             }
             .alert(isPresented: $isShowingError) {
@@ -74,21 +75,18 @@ struct DessertsListView: View {
     }
     
     private func loadDesserts() async {
-        do {
-            let fetchedDesserts = try await DessertService.shared.fetchDesserts()
-            self.desserts = fetchedDesserts
-        } catch {
-            await ErrorHandler.shared.report(error: error)
+        await viewModel.loadDesserts()
+        await updateFilteredDesserts()
+        isLoading = false
+        if let error = await viewModel.errorMessage {
+            currentErrorMessage = error
+            isShowingError = true
         }
-        self.isLoading = false
     }
     
-    private var filteredDesserts: [Dessert] {
-        if searchQuery.isEmpty {
-            return desserts
-        } else {
-            return desserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
-        }
+    private func updateFilteredDesserts() async {
+        await viewModel.updateSearchQuery(searchQuery)
+        desserts = await viewModel.filteredDesserts
     }
 }
 

@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct DessertDetailView: View {
-    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     
     let dessertID: String
     
+    @State private var viewModel = DessertDetailViewModel()
     @State private var dessertDetail: DessertDetail?
     @State private var isLoading = true
     @State private var hasError = false
     @State private var sortedIngredients: [(ingredient: String, measure: String)] = []
     @State private var sortAscending = true
-    
-    private let viewModel = DessertDetailViewModel()
     
     var body: some View {
         GeometryReader { geometry in
@@ -37,7 +36,7 @@ struct DessertDetailView: View {
         .onAppear {
             Task {
                 await loadDessertDetail()
-                await sortIngredients(for: dessertDetail?.ingredients ?? [:])
+                sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
             }
         }
     }
@@ -110,7 +109,7 @@ struct DessertDetailView: View {
                 Button(action: {
                     Task {
                         sortAscending.toggle()
-                        await sortIngredients(for: dessertDetail?.ingredients ?? [:])
+                        sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:], ascending: sortAscending)
                     }
                 }) {
                     Image(systemName: sortAscending ? "chevron.up" : "chevron.down")
@@ -132,18 +131,11 @@ struct DessertDetailView: View {
         }
     }
     
-    private func sortIngredients(for ingredients: [String: String]) async {
-        sortedIngredients = await viewModel.sortIngredients(ingredients: ingredients, ascending: sortAscending)
-    }
-    
     private func loadDessertDetail() async {
         await viewModel.loadDessertDetail(dessertID: dessertID)
-        self.dessertDetail = await viewModel.dessertDetail
-        self.isLoading = false
-        
-        if await viewModel.dessertDetail == nil {
-            self.hasError = true
-        }
+        dessertDetail = await viewModel.dessertDetail
+        isLoading = false
+        hasError = await viewModel.hasError
     }
 }
 

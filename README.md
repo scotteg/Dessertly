@@ -6,6 +6,8 @@ This project serves as an example of modern, idiomatic Swift, that showcases the
 
 [RxSwift version of this project](https://github.com/scotteg/Dessertly-RxSwift)
 
+[Navigating Apple's Evolving Concurrency Models: A Tale of Two Projects](https://www.linkedin.com/pulse/navigating-apples-evolving-concurrency-models-tale-two-scott-gardner-lwmqc/)
+
 ## Features
 
 - Browse a list of desserts.

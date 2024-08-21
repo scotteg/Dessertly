@@ -16,7 +16,7 @@ struct DessertsListView: View {
     @State private var searchQuery: String = ""
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 if isLoading {
                     ProgressView()

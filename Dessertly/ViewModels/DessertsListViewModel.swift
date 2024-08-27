@@ -7,11 +7,11 @@
 
 import Foundation
 
-/// View model responsible for fetching and managing a list of desserts.
+/// Manages a list of desserts.
 actor DessertsListViewModel {
     private let dessertService: DessertServiceProtocol
-    private(set) var desserts: [Dessert] = []
-    private(set) var searchQuery: String = ""
+    private(set) var allDesserts: [Dessert] = []
+    private(set) var filteredDesserts: [Dessert] = []
     private(set) var isLoading = true
     private(set) var errorMessage: String?
     
@@ -20,8 +20,14 @@ actor DessertsListViewModel {
     }
     
     func loadDesserts() async {
+        isLoading = true
+        
         do {
-            desserts = try await dessertService.fetchDesserts()
+            allDesserts = try await dessertService.fetchDesserts()
+            filteredDesserts = allDesserts
+        } catch let error as DessertServiceError {
+            await ErrorHandler.shared.report(error: error)
+            errorMessage = error.localizedDescription
         } catch {
             await ErrorHandler.shared.report(error: error)
             errorMessage = error.localizedDescription
@@ -30,20 +36,12 @@ actor DessertsListViewModel {
         isLoading = false
     }
     
-    func updateSearchQuery(_ query: String) {
-        searchQuery = query
-    }
-    
-    var filteredDesserts: [Dessert] {
+    func getFilteredDesserts(searchQuery: String) async {
         if searchQuery.isEmpty {
-            desserts
+            filteredDesserts = allDesserts
         } else {
-            desserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
+            filteredDesserts = allDesserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
         }
-    }
-    
-    var isEmpty: Bool {
-        desserts.isEmpty && !isLoading
     }
     
     var hasError: Bool {

@@ -8,41 +8,54 @@
 import SwiftUI
 
 struct DessertDetailView: View {
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @State private var viewModel = DessertDetailViewModel()
+    @State private var dessertDetail: DessertDetail?
+    @State private var sortedIngredients: [(ingredient: String, measure: String)] = []
+    @State private var sortAscending = true
+    @State private var isLoading = true
+    @State private var showErrorAlert = false
+    @State private var currentErrorMessage: String?
     
     let dessertID: String
     
-    @State private var viewModel = DessertDetailViewModel()
-    @State private var dessertDetail: DessertDetail?
-    @State private var isLoading = true
-    @State private var hasError = false
-    @State private var sortedIngredients: [(ingredient: String, measure: String)] = []
-    @State private var sortAscending = true
-    
     var body: some View {
         GeometryReader { geometry in
-            if isLoading {
-                ProgressView()
-                    .padding()
-            } else if hasError {
-                Text("An error occurred while loading the dessert detail.")
-                    .foregroundColor(.red)
-                    .padding()
-            } else if let detail = dessertDetail {
-                content(for: detail, geometry: geometry)
-                    .navigationTitle(isLoading ? "Loading Detail..." : dessertDetail?.name ?? "Dessert Detail")
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .padding()
+                } else if let errorMessage = currentErrorMessage {
+                    VStack {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .padding()
+                        Spacer()
+                    }
+                } else if let detail = dessertDetail {
+                    content(for: detail, geometry: geometry)
+                        .navigationTitle(dessertDetail?.name ?? "Dessert Detail")
+                }
+            }
+            .alert(isPresented: $showErrorAlert) {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(currentErrorMessage ?? "An error occurred."),
+                    dismissButton: .default(Text("OK")) {
+                        Task {
+                            await ErrorHandler.shared.clearError()
+                        }
+                    }
+                )
             }
         }
         .task {
             await loadDessertDetail()
-            sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:],
-                                                                ascending: sortAscending)
         }
     }
     
     @ViewBuilder
     private func content(for detail: DessertDetail, geometry: GeometryProxy) -> some View {
-        if verticalSizeClass == .compact {
+        if geometry.size.width > geometry.size.height {
             landscapeContent(for: detail, geometry: geometry)
         } else {
             portraitContent(for: detail)
@@ -107,9 +120,7 @@ struct DessertDetailView: View {
                 Spacer()
                 Button(action: {
                     Task {
-                        sortAscending.toggle()
-                        sortedIngredients = await viewModel.sortIngredients(ingredients: dessertDetail?.ingredients ?? [:],
-                                                                            ascending: sortAscending)
+                        await toggleSortOrder()
                     }
                 }) {
                     Image(systemName: sortAscending ? "chevron.up" : "chevron.down")
@@ -132,10 +143,31 @@ struct DessertDetailView: View {
     }
     
     private func loadDessertDetail() async {
+        await updateLoadingState()
+        
         await viewModel.loadDessertDetail(dessertID: dessertID)
         dessertDetail = await viewModel.dessertDetail
-        isLoading = false
-        hasError = await viewModel.hasError
+        
+        if let error = await viewModel.errorMessage {
+            currentErrorMessage = error
+            showErrorAlert = true
+        } else if let ingredients = dessertDetail?.ingredients {
+            sortedIngredients = await viewModel.sortIngredients(ingredients: ingredients,
+                                                                ascending: sortAscending)
+        }
+        
+        await updateLoadingState()
+    }
+    
+    private func toggleSortOrder() async {
+        sortAscending.toggle()
+        if let ingredients = dessertDetail?.ingredients {
+            sortedIngredients = await viewModel.sortIngredients(ingredients: ingredients, ascending: sortAscending)
+        }
+    }
+    
+    private func updateLoadingState() async {
+        isLoading = await viewModel.isLoading
     }
 }
 

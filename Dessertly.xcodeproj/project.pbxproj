@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D26CC9D52C7E250100005989 /* DessertServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CC9D42C7E250100005989 /* DessertServiceError.swift */; };
 		D2D608462C710E8A0003610C /* DessertlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D608452C710E8A0003610C /* DessertlyApp.swift */; };
 		D2D608482C710E8A0003610C /* DessertsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D608472C710E8A0003610C /* DessertsListView.swift */; };
 		D2D6084A2C710E8C0003610C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2D608492C710E8C0003610C /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 /* Begin PBXFileReference section */
 		D20BCF3B2C742C3700D75C73 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D20BCF3C2C74312000D75C73 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
+		D26CC9D42C7E250100005989 /* DessertServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertServiceError.swift; sourceTree = "<group>"; };
 		D2D608422C710E8A0003610C /* Dessertly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dessertly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2D608452C710E8A0003610C /* DessertlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertlyApp.swift; sourceTree = "<group>"; };
 		D2D608472C710E8A0003610C /* DessertsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertsListView.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				D2D608852C7112870003610C /* DessertDetail.swift */,
 				D2D608872C7112CF0003610C /* DessertResponse.swift */,
 				D2D608892C7113390003610C /* DessertDetailResponse.swift */,
+				D26CC9D42C7E250100005989 /* DessertServiceError.swift */,
 				D2D608912C73E21D0003610C /* DynamicCodingKeys.swift */,
 				D2D608992C73F1530003610C /* ImageCache.swift */,
 			);
@@ -305,6 +308,7 @@
 				D2D608762C710EDF0003610C /* DessertServiceProtocol.swift in Sources */,
 				D2D608842C71121C0003610C /* Dessert.swift in Sources */,
 				D2D608A32C741FF10003610C /* ErrorHandler.swift in Sources */,
+				D26CC9D52C7E250100005989 /* DessertServiceError.swift in Sources */,
 				D2D608482C710E8A0003610C /* DessertsListView.swift in Sources */,
 				D2D608822C7111FA0003610C /* DessertDetailViewModel.swift in Sources */,
 				D2D608462C710E8A0003610C /* DessertlyApp.swift in Sources */,

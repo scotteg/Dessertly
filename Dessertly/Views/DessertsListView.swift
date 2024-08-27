@@ -10,9 +10,9 @@ import SwiftUI
 struct DessertsListView: View {
     @State private var viewModel = DessertsListViewModel()
     @State private var desserts: [Dessert] = []
-    @State private var isLoading = true
     @State private var isShowingError = false
     @State private var currentErrorMessage: String?
+    @State private var isLoading = true
     @State private var searchQuery: String = ""
     
     var body: some View {
@@ -73,19 +73,27 @@ struct DessertsListView: View {
     }
     
     private func loadDesserts() async {
+        await updateLoadingState()
+        
         await viewModel.loadDesserts()
-        await updateFilteredDesserts()
-        isLoading = false
         
         if let error = await viewModel.errorMessage {
             currentErrorMessage = error
             isShowingError = true
+        } else {
+            await updateFilteredDesserts()
         }
+        
+        await updateLoadingState()
     }
     
     private func updateFilteredDesserts() async {
-        await viewModel.updateSearchQuery(searchQuery)
+        await viewModel.getFilteredDesserts(searchQuery: searchQuery)
         desserts = await viewModel.filteredDesserts
+    }
+    
+    private func updateLoadingState() async {
+        isLoading = await viewModel.isLoading
     }
 }
 

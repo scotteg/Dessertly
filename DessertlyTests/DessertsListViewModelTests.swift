@@ -31,7 +31,7 @@ final class DessertsListViewModelTests: XCTestCase {
         await viewModel.loadDesserts()
         
         // Then
-        let desserts = await viewModel.desserts
+        let desserts = await viewModel.allDesserts
         XCTAssertEqual(desserts.count, 2)
         XCTAssertEqual(desserts[0].name, "Mock Dessert 1")
         XCTAssertEqual(desserts[1].name, "Mock Dessert 2")

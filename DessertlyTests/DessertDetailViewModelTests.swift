@@ -61,7 +61,7 @@ final class DessertDetailViewModelTests: XCTestCase {
         
         // When
         let sortedIngredients = await viewModel.sortIngredients(
-            ingredients: await viewModel.dessertDetail?.ingredients ?? [:],
+            ingredients: viewModel.dessertDetail?.ingredients ?? [:],
             ascending: true
         )
         
@@ -77,7 +77,7 @@ final class DessertDetailViewModelTests: XCTestCase {
         
         // When
         let sortedIngredients = await viewModel.sortIngredients(
-            ingredients: await viewModel.dessertDetail?.ingredients ?? [:],
+            ingredients: viewModel.dessertDetail?.ingredients ?? [:],
             ascending: false
         )
         

@@ -14,14 +14,14 @@ actor DessertsListViewModel {
     private(set) var filteredDesserts: [Dessert] = []
     private(set) var isLoading = true
     private(set) var errorMessage: String?
-    
+
     init(dessertService: DessertServiceProtocol = DessertService.shared) {
         self.dessertService = dessertService
     }
-    
+
     func loadDesserts() async {
         isLoading = true
-        
+
         do {
             allDesserts = try await dessertService.fetchDesserts()
             filteredDesserts = allDesserts
@@ -32,18 +32,20 @@ actor DessertsListViewModel {
             await ErrorHandler.shared.report(error: error)
             errorMessage = error.localizedDescription
         }
-        
+
         isLoading = false
     }
-    
+
     func getFilteredDesserts(searchQuery: String) async {
-        if searchQuery.isEmpty {
+        guard !searchQuery.isEmpty else {
             filteredDesserts = allDesserts
-        } else {
-            filteredDesserts = allDesserts.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
+            return
         }
+
+        let query = searchQuery.lowercased()
+        filteredDesserts = allDesserts.filter { $0.name.lowercased().contains(query) }
     }
-    
+
     var hasError: Bool {
         errorMessage != nil
     }

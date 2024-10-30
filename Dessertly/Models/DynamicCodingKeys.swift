@@ -9,17 +9,17 @@ import Foundation
 
 enum DynamicCodingKeys: CodingKey {
     case key(String)
-    
+
     var stringValue: String {
         switch self {
-        case .key(let string): return string
+        case let .key(string): return string
         }
     }
-    
+
     init?(stringValue: String) {
         self = .key(stringValue)
     }
-    
+
     var intValue: Int? { return nil }
-    init?(intValue: Int) { return nil }
+    init?(intValue _: Int) { return nil }
 }

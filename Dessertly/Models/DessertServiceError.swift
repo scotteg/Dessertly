@@ -13,7 +13,7 @@ enum DessertServiceError: Error {
     case badServerResponse
     case decodingError
     case unknownError
-    
+
     var localizedDescription: String {
         switch self {
         case .badURL:

@@ -10,13 +10,14 @@ import Foundation
 /// An actor that conforms to `DessertServiceProtocol` and handles fetching desserts and their details.
 actor DessertService: DessertServiceProtocol {
     static let shared = DessertService()
-    
+
     private let scheme = "https"
     private let host = "www.themealdb.com"
     private let basePath = "/api/json/v1/1/"
-    
+    private let errorHandler = ErrorHandler.shared
+
     private init() {}
-    
+
     /// Fetches a list of desserts from the remote API.
     /// - Returns: A sorted array of `Dessert` instances.
     /// - Throws: An error if the data fetching or decoding fails.
@@ -24,19 +25,19 @@ actor DessertService: DessertServiceProtocol {
         do {
             guard let url = makeURL(endpoint: "filter.php", queryItems: [URLQueryItem(name: "c", value: "Dessert")]) else {
                 let error = URLError(.badURL)
-                await ErrorHandler.shared.report(error: error)
+                await errorHandler.report(error: error)
                 throw error
             }
-            
+
             let (data, _) = try await URLSession.shared.data(from: url)
             let dessertResponse = try JSONDecoder().decode(DessertResponse.self, from: data)
-            return dessertResponse.meals.sorted { $0.name < $1.name }
+            return dessertResponse.meals.sorted { $0.name.lowercased() < $1.name.lowercased() }
         } catch {
-            await ErrorHandler.shared.report(error: error)
+            await errorHandler.report(error: error)
             throw error
         }
     }
-    
+
     /// Fetches the details of a specific dessert by its ID.
     /// - Parameter id: The unique identifier of the dessert.
     /// - Returns: A `DessertDetail` instance containing detailed information about the dessert.
@@ -45,19 +46,19 @@ actor DessertService: DessertServiceProtocol {
         do {
             guard let url = makeURL(endpoint: "lookup.php", queryItems: [URLQueryItem(name: "i", value: id)]) else {
                 let error = URLError(.badURL)
-                await ErrorHandler.shared.report(error: error)
+                await errorHandler.report(error: error)
                 throw error
             }
-            
+
             let (data, _) = try await URLSession.shared.data(from: url)
             let detailResponse = try JSONDecoder().decode(DessertDetailResponse.self, from: data)
-            
+
             guard let rawDetail = detailResponse.meals.first else {
                 let error = URLError(.badServerResponse)
-                await ErrorHandler.shared.report(error: error)
+                await errorHandler.report(error: error)
                 throw error
             }
-            
+
             return DessertDetail(
                 id: rawDetail.id,
                 name: rawDetail.name,
@@ -66,11 +67,11 @@ actor DessertService: DessertServiceProtocol {
                 imageUrl: rawDetail.imageUrl
             )
         } catch {
-            await ErrorHandler.shared.report(error: error)
+            await errorHandler.report(error: error)
             throw error
         }
     }
-    
+
     /// Constructs a URL from the given endpoint and query items using URLComponents.
     /// - Parameters:
     ///   - endpoint: The API endpoint.

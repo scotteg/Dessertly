@@ -14,16 +14,18 @@ struct DessertsListView: View {
     @State private var currentErrorMessage: String?
     @State private var isLoading = true
     @State private var searchQuery: String = ""
-    
+
     var body: some View {
         NavigationStack {
             Group {
                 if isLoading {
                     ProgressView()
+                        .accessibilityLabel("Loading desserts")
                 } else if desserts.isEmpty {
                     Text("No desserts available")
                         .foregroundColor(.gray)
                         .padding()
+                        .accessibilityLabel("No desserts available")
                 } else {
                     List(desserts, id: \.id) { dessert in
                         NavigationLink(destination: DessertDetailView(dessertID: dessert.id)) {
@@ -32,14 +34,16 @@ struct DessertsListView: View {
                                     CachedAsyncImage(url: url)
                                         .frame(width: 50, height: 50)
                                         .cornerRadius(5)
+                                        .accessibilityHidden(true)
                                 }
+
                                 Text(dessert.name)
                             }
                         }
                     }
                 }
             }
-            .navigationTitle("Desserts")
+            .navigationTitle("Desserts") // Back button title.
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -50,6 +54,7 @@ struct DessertsListView: View {
                 }
             }
             .searchable(text: $searchQuery, prompt: "Search for desserts")
+            .accessibilityHint("Search for desserts by name.")
             .onChange(of: searchQuery) {
                 Task {
                     await updateFilteredDesserts()
@@ -71,27 +76,27 @@ struct DessertsListView: View {
             }
         }
     }
-    
+
     private func loadDesserts() async {
         await updateLoadingState()
-        
+
         await viewModel.loadDesserts()
-        
+
         if let error = await viewModel.errorMessage {
             currentErrorMessage = error
             isShowingError = true
         } else {
             await updateFilteredDesserts()
         }
-        
+
         await updateLoadingState()
     }
-    
+
     private func updateFilteredDesserts() async {
         await viewModel.getFilteredDesserts(searchQuery: searchQuery)
         desserts = await viewModel.filteredDesserts
     }
-    
+
     private func updateLoadingState() async {
         isLoading = await viewModel.isLoading
     }

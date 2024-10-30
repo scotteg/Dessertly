@@ -41,6 +41,7 @@ struct CachedAsyncImage: View {
     private func fetchImage() async {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
+
             if let loadedImage = UIImage(data: data) {
                 ImageCache.shared.setImage(loadedImage, forKey: url.absoluteString)
 

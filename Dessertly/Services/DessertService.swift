@@ -23,7 +23,8 @@ actor DessertService: DessertServiceProtocol {
     /// - Throws: An error if the data fetching or decoding fails.
     func fetchDesserts() async throws -> [Dessert] {
         do {
-            guard let url = makeURL(endpoint: "filter.php", queryItems: [URLQueryItem(name: "c", value: "Dessert")]) else {
+            guard let url = makeURL(endpoint: "filter.php", queryItems: [URLQueryItem(name: "c", value: "Dessert")])
+            else {
                 let error = URLError(.badURL)
                 await errorHandler.report(error: error)
                 throw error
@@ -44,7 +45,8 @@ actor DessertService: DessertServiceProtocol {
     /// - Throws: An error if the URL is invalid, data fetching fails, or decoding fails.
     func fetchDessertDetail(by id: String) async throws -> DessertDetail {
         do {
-            guard let url = makeURL(endpoint: "lookup.php", queryItems: [URLQueryItem(name: "i", value: id)]) else {
+            guard let url = makeURL(endpoint: "lookup.php", queryItems: [URLQueryItem(name: "i", value: id)])
+            else {
                 let error = URLError(.badURL)
                 await errorHandler.report(error: error)
                 throw error
@@ -53,7 +55,8 @@ actor DessertService: DessertServiceProtocol {
             let (data, _) = try await URLSession.shared.data(from: url)
             let detailResponse = try JSONDecoder().decode(DessertDetailResponse.self, from: data)
 
-            guard let rawDetail = detailResponse.meals.first else {
+            guard let rawDetail = detailResponse.meals.first
+            else {
                 let error = URLError(.badServerResponse)
                 await errorHandler.report(error: error)
                 throw error

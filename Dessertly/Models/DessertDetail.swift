@@ -54,20 +54,23 @@ struct DessertDetail: Decodable {
 
         var ingredientsDict = [String: String]()
         let dynamicContainer = try decoder.container(keyedBy: DynamicCodingKeys.self)
+        var index = 1
 
-        // Loops through potential ingredient and measure keys in the JSON, from 1 to 20.
-        for i in 1 ... 20 {
-            let ingredientKey = DynamicCodingKeys(stringValue: "strIngredient\(i)")!
-            let measureKey = DynamicCodingKeys(stringValue: "strMeasure\(i)")!
+        while true {
+            let ingredientKey = DynamicCodingKeys(stringValue: "strIngredient\(index)")!
+            let measureKey = DynamicCodingKeys(stringValue: "strMeasure\(index)")!
 
-            // Checks if the `ingredient` and `measure` are not empty, then capitalizes and stores them in the dictionary.
-            if let ingredient = try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey)?.capitalized,
-               !ingredient.isEmpty,
-               let measure = try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey),
-               !measure.isEmpty
-            {
-                ingredientsDict[ingredient] = measure
+            // Check for the presence of both keys and exit if they are not found or are empty.
+            guard let ingredient = try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey)?.capitalized,
+                  !ingredient.isEmpty,
+                  let measure = try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey),
+                  !measure.isEmpty
+            else {
+                break
             }
+
+            ingredientsDict[ingredient] = measure
+            index += 1
         }
 
         ingredients = ingredientsDict

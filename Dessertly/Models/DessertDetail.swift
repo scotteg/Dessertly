@@ -95,15 +95,4 @@ struct DessertDetail: Decodable {
             .joined(separator: "\n\n")
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
-
-    struct DynamicCodingKeys: CodingKey {
-        var stringValue: String
-
-        init?(stringValue: String) {
-            self.stringValue = stringValue
-        }
-
-        var intValue: Int? { return nil }
-        init?(intValue _: Int) { return nil }
-    }
 }
